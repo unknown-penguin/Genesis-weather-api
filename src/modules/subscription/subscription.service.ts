@@ -5,6 +5,7 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { SubscriptionEntity } from './entities/subscription.entity';
 import { MailService } from '../../mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Frequency } from './enums/frequency.enum';
 
 @Injectable()
 export class SubscriptionService {
@@ -87,5 +88,11 @@ export class SubscriptionService {
     subscription.isActive = false;
     await this.subscriptionRepository.save(subscription);
     return true;
+  }
+
+  async findByFrequency(frequency: Frequency): Promise<SubscriptionEntity[]> {
+    return this.subscriptionRepository.find({
+      where: { frequency, isActive: true },
+    });
   }
 }

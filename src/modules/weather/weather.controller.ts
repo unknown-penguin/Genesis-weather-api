@@ -9,11 +9,11 @@ import { WeatherService } from './weather.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('weather')
-@Controller('api/weather')
+@Controller('')
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
-  @Get()
+  @Get('/weather')
   @ApiOperation({ summary: 'Get current weather for a city' })
   @ApiQuery({
     name: 'city',

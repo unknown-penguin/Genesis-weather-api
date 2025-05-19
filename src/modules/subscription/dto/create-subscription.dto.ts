@@ -4,9 +4,10 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
-  IsArray,
+  IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Frequency } from '../enums/frequency.enum';
 
 export class CreateSubscriptionDto {
   @ApiProperty({
@@ -29,12 +30,13 @@ export class CreateSubscriptionDto {
 
   @ApiProperty({
     description: 'The frequency of updates',
-    example: 'daily',
+    example: Frequency.DAILY,
     required: false,
+    enum: Frequency,
   })
   @IsOptional()
-  @IsString()
-  frequency?: string;
+  @IsEnum(Frequency)
+  frequency?: Frequency;
 
   @ApiProperty({
     description: 'The city to receive weather updates for',

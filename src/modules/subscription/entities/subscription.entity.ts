@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Frequency } from '../enums/frequency.enum';
 
 @Entity('subscriptions')
 export class SubscriptionEntity {
@@ -17,8 +18,12 @@ export class SubscriptionEntity {
   @Column()
   city: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  frequency: string;
+  @Column({
+    type: 'enum',
+    enum: Frequency,
+    nullable: true,
+  })
+  frequency: Frequency;
 
   @Column({ type: 'varchar', nullable: true })
   token: string;

@@ -10,10 +10,17 @@ import {
 } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @ApiTags('subscription')
-@Controller('api/subscriptions')
+@Controller('')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
@@ -25,6 +32,22 @@ export class SubscriptionController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   @ApiResponse({ status: 409, description: 'Email already subscribed' })
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'user@example.com' },
+        city: { type: 'string', example: 'New York' },
+        frequency: {
+          type: 'string',
+          enum: ['hourly', 'daily'],
+          example: 'hourly',
+        },
+      },
+      required: ['email', 'city', 'frequency'],
+    },
+  })
   async subscribe(@Body() createSubscriptionDto: CreateSubscriptionDto) {
     console.log('Received subscription request:', createSubscriptionDto);
     try {
@@ -60,6 +83,12 @@ export class SubscriptionController {
   })
   @ApiResponse({ status: 400, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Token not found' })
+  @ApiParam({
+    name: 'token',
+    type: 'string',
+    description: 'Confirmation token from the email',
+    example: 'token',
+  })
   async confirm(@Param('token') token: string) {
     try {
       const result = await this.subscriptionService.confirmSubscription(token);
@@ -80,6 +109,12 @@ export class SubscriptionController {
   @ApiResponse({ status: 200, description: 'Unsubscribed successfully' })
   @ApiResponse({ status: 400, description: 'Invalid token' })
   @ApiResponse({ status: 404, description: 'Token not found' })
+  @ApiParam({
+    name: 'token',
+    type: 'string',
+    description: 'Token to unsubscribe',
+    example: 'token',
+  })
   async unsubscribe(@Param('token') token: string) {
     try {
       const unsubscribed = await this.subscriptionService.unsubscribe(token);

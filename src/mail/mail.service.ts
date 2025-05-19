@@ -65,7 +65,7 @@ export class MailService {
 
   async sendSubscriptionConfirmation(subscription: SubscriptionEntity): Promise<void> {
     const { email, token } = subscription;
-    const confirmationUrl = `${this.configService.get<string>('APP_URL')}/confirm?token=${token}`;
+    const confirmationUrl = `${this.configService.get<string>('APP_URL')}/confirm/${token}`;
 
     await this.sendMail(
       email,
@@ -77,10 +77,16 @@ export class MailService {
   async sendWeatherUpdate(email: string, weatherData: any, unsubscribeToken: string): Promise<void> {
     const unsubscribeLink = `${this.configService.get<string>('APP_URL')}/unsubscribe?token=${unsubscribeToken}`;
 
+    const emailContent = `Here is your latest weather update: ${JSON.stringify(weatherData)}.
+
+To unsubscribe, click the button below:
+
+<a href="${unsubscribeLink}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 5px;">Unsubscribe</a>`;
+
     await this.sendMail(
       email,
       'Weather Update',
-      `Here is your latest weather update: ${JSON.stringify(weatherData)}. To unsubscribe, click here: ${unsubscribeLink}`,
+      emailContent
     );
   }
 }
