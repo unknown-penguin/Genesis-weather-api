@@ -1,116 +1,91 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Weather API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
+The Weather API is a server-side application built using the NestJS framework. It provides endpoints for fetching weather data and managing user subscriptions for weather updates. The application is designed to be scalable, efficient, and easy to deploy.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Application Flow
 
-## Description
+### 1. Weather Data Retrieval
+- **Endpoint**: `GET /api/weather`
+- **Description**: Fetches the current weather for a specified city.
+- **Flow**:
+  1. The `WeatherController` receives the request with the city name as a query parameter.
+  2. The `WeatherService` fetches weather data from an external API using the `HttpService`.
+  3. The response includes temperature, humidity, and a weather description.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 2. Subscription Management
+- **Endpoints**:
+  - `POST /api/subscriptions/subscribe`: Subscribe to weather updates.
+  - `GET /api/subscriptions/confirm/:token`: Confirm email subscription.
+  - `GET /api/subscriptions/unsubscribe/:token`: Unsubscribe from weather updates.
+- **Flow**:
+  1. The `SubscriptionController` handles subscription-related requests.
+  2. The `SubscriptionService` interacts with the database to manage subscription entities.
+  3. Emails are sent using the `MailService` for confirmation and updates.
 
-## Project setup
+### 3. Email Notifications
+- **Description**: Sends email notifications for subscription confirmation and weather updates.
+- **Flow**:
+  1. The `MailService` uses `nodemailer` and Google OAuth2 for secure email delivery.
+  2. Emails include links for confirming or unsubscribing from subscriptions.
 
+## Key Components
+
+### 1. Controllers
+- **`WeatherController`**: Handles weather-related requests.
+- **`SubscriptionController`**: Manages subscription-related operations.
+
+### 2. Services
+- **`WeatherService`**: Fetches weather data from external APIs.
+- **`SubscriptionService`**: Handles subscription logic and database interactions.
+- **`MailService`**: Sends emails for subscription confirmation and updates.
+
+### 3. Modules
+- **`WeatherModule`**: Encapsulates weather-related functionality.
+- **`SubscriptionModule`**: Encapsulates subscription-related functionality.
+- **`MailModule`**: Encapsulates email-related functionality.
+- **`CoreModule`**: Provides shared services like configuration and database connection.
+
+## Environment Variables
+The application uses the following environment variables:
+
+| Variable              | Description                          |
+|-----------------------|--------------------------------------|
+| `PORT`               | Port for the application to run on. |
+| `DB_HOST`            | Database host.                      |
+| `DB_PORT`            | Database port.                      |
+| `DB_USER`            | Database username.                  |
+| `DB_PASS`            | Database password.                  |
+| `DB_NAME`            | Database name.                      |
+| `GMAIL_USER`         | Gmail account for sending emails.   |
+| `GMAIL_CLIENT_ID`    | Google OAuth2 client ID.            |
+| `GMAIL_CLIENT_SECRET`| Google OAuth2 client secret.        |
+| `GMAIL_REFRESH_TOKEN`| Google OAuth2 refresh token.        |
+| `APP_URL`            | Base URL of the application.        |
+
+## Running the Application
+
+### Development
 ```bash
-# Install dependencies
-$ npm install
-
-# If you encounter dependency conflicts, use one of these approaches:
-$ npm install --legacy-peer-deps
-# or
-$ npm ci
-# or
-$ npm install --force
+npm install
+npm run start:dev
 ```
 
-### Dependency Conflicts
-
-If you encounter the ERESOLVE error with @nestjs/cli and @swc/cli, this is due to version incompatibilities. The repository has been configured with compatible versions, but if you need to address this manually:
-
-1. Make sure @swc/cli is at version ^0.5.2 (not ^0.7.x)
-2. Or use the --legacy-peer-deps flag:
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-
-## Compile and run the project
-
+### Production
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run build
+npm start
 ```
 
-## Run tests
+### Docker
+Use the provided `Dockerfile` and `docker-compose.yml` to build and run the application in a containerized environment.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up --build
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## API Documentation
+The application includes Swagger documentation available at `/api-docs` when the application is running.
 
 ## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.
