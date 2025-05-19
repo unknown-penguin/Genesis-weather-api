@@ -1,0 +1,16 @@
+openapi: 3.0.0
+info:
+  title: Weather API
+  description: API for weather forecasts and subscriptions
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
